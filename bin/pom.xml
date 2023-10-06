@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>org.corrigentia</groupId>
-	<artifactId>swagger_rest</artifactId>
+	<artifactId>fitrest</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Swagger REST API</name>
-	<description>Demo project for Spring Boot</description>
+	<name>Fit World Spring Boot REST API</name>
+	<description>Spring Boot API for Fit World app</description>
 	<properties>
 		<java.version>17</java.version>
 		<spring-cloud.version>2022.0.4</spring-cloud.version>

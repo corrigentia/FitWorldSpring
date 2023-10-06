@@ -6,14 +6,15 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.3</version>
-        <relativePath /> <!-- lookup parent from repository -->
+        <version>3.1.4</version>
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.corrigentia</groupId>
-    <artifactId>swagger_rest</artifactId>
+    <artifactId>fitrest</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Swagger REST API</name>
-    <description>Demo project for Spring Boot</description>
+    <name>Fit World Spring Boot REST API</name>
+    <description>Code-first PostgreSQL DB generator, back-end and API
+    </description>
     <properties>
         <java.version>17</java.version>
         <spring-cloud.version>2022.0.4</spring-cloud.version>
@@ -211,6 +212,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <!--<version>3.1.3</version>-->
                 <configuration>
                     <excludes>
                         <exclude>
