@@ -39,3 +39,4 @@ build/
 /hs_err_pid21636.log
 /hs_err_pid27056.log
 /doc/logfile.txt
+/*.log
