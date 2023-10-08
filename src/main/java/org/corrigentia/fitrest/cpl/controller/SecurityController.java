@@ -90,6 +90,7 @@ public class SecurityController {
                                                      @RequestBody LoginForm form) {
 
 
+        System.out.println("trying to sign in");
         System.out.println(request);
 //        UserDetails user = securityService.loadUserByUsername(form.email);
         UserEntity user = (UserEntity) securityService.loadUserByUsername(form.email);
