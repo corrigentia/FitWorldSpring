@@ -1,6 +1,7 @@
 package org.corrigentia.fitrest.bbll.service;
 
 import org.corrigentia.fitrest.adal.domain.entity.EquipmentEntity;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 
@@ -24,4 +25,6 @@ public interface EquipmentService {
     EquipmentEntity update(long id, EquipmentEntity entity);
 
     EquipmentEntity delete(long id);
+
+    EquipmentEntity findEquipmentByName(String name) throws ChangeSetPersister.NotFoundException;
 }

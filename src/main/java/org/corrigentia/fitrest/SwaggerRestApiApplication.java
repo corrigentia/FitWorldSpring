@@ -9,9 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 @EnableConfigurationProperties
 public class SwaggerRestApiApplication {
-
 	public static void main(final String[] args) {
 		SpringApplication.run(SwaggerRestApiApplication.class, args);
 	}
-
 }

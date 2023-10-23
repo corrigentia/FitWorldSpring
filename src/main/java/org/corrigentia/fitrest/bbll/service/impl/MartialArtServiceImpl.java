@@ -41,8 +41,8 @@ public class MartialArtServiceImpl implements MartialArtService {
 
     @Override
     public Page<MartialArtEntity> findByEnabledTrue(final int page,
-                                                    final int size,
-                                                    final Sort sort) {
+            final int size,
+            final Sort sort) {
         return this.repository.findByEnabledTrue(PageRequest.of(page, size, sort));
     }
 
@@ -53,22 +53,21 @@ public class MartialArtServiceImpl implements MartialArtService {
     @Override
     public Optional<MartialArtEntity> findOneById(final long id) {
         return this.repository.findById(id);
-//        return Optional.empty();
+        // return Optional.empty();
     }
 
     /**
      * @param entity
      */
     @Override
-    public void insert(final MartialArtEntity entity) {
-        this.repository.save(entity);
+    public MartialArtEntity insert(final MartialArtEntity entity) {
+        return this.repository.save(entity);
     }
-
 
     @Override
     public MartialArtEntity update(long id, MartialArtEntity entity) {
         // TODO Auto-generated method stub
-        var toUpdate = repository.findById(id)
+        MartialArtEntity toUpdate = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Martial Art id=" + id + " not found"));
 
         toUpdate.setName(entity.getName());
@@ -77,7 +76,7 @@ public class MartialArtServiceImpl implements MartialArtService {
 
         return toUpdate;
 
-//        return Optional.empty();
+        // return Optional.empty();
     }
 
     /**
@@ -86,10 +85,10 @@ public class MartialArtServiceImpl implements MartialArtService {
      */
     @Override
     public MartialArtEntity delete(long id) {
-        var toDelete = repository.findById(id);
+        Optional<MartialArtEntity> toDelete = repository.findById(id);
 
         if (toDelete.isPresent()) {
-            var entity = toDelete.get();
+            MartialArtEntity entity = toDelete.get();
             entity.setEnabled(false);
             this.repository.save(entity);
             return entity;

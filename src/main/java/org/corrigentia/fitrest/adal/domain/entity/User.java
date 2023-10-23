@@ -1,7 +1,9 @@
 package org.corrigentia.fitrest.adal.domain.entity;
 
+import lombok.ToString;
 import org.corrigentia.fitrest.adal.repo.UserRepository;
 
+@ToString(callSuper = true)
 /**
  * @author Person
  * @since 2023/08/11

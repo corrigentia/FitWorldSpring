@@ -2,9 +2,10 @@ package org.corrigentia.fitrest.cpl.controller;
 
 import jakarta.ws.rs.NotFoundException;
 import org.corrigentia.fitrest.adal.domain.entity.security.InstructorEntity;
+import org.corrigentia.fitrest.adal.domain.entity.security.RoleType;
 import org.corrigentia.fitrest.bbll.service.InstructorService;
+import org.corrigentia.fitrest.model.vo.InstructorForm;
 import org.corrigentia.fitrest.model.vo.InstructorVO;
-import org.corrigentia.fitrest.model.vo.MartialArtistRegisterForm;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin//(origins = {"http://localhost:4200"})
+@CrossOrigin(origins = {"http://localhost:4200"}, allowCredentials = "true")
 @RequestMapping(path = "/api/instructors")
 public class InstructorController {
     private final InstructorService service;
@@ -25,12 +26,10 @@ public class InstructorController {
     @GetMapping(path = {"", "/"})
     public ResponseEntity<List<InstructorVO>> getAllAction(
             @RequestParam(defaultValue = "0", required = false) final int page,
-            @RequestParam(defaultValue = "5", required = false) final int size
-    ) {
+            @RequestParam(defaultValue = "5", required = false) final int size) {
         final var response = this.service.findByEnabledTrue(page, size);
 
-        final var instructors =
-                response.map(InstructorVO::fromBLL).toList();
+        final var instructors = response.map(InstructorVO::fromBLL).toList();
 
         return ResponseEntity.ok(instructors);
     }
@@ -46,9 +45,9 @@ public class InstructorController {
 
     @PostMapping(path = {"", "/"})
     public ResponseEntity<InstructorVO> postInstructorAction(
-            @Validated @RequestBody MartialArtistRegisterForm form
-    ) {
+            @Validated @RequestBody InstructorForm form) {
         var entity = (InstructorEntity) form.toEntity();
+        entity.setRole(RoleType.INSTRUCTOR);
 
         this.service.insert(entity);
 
@@ -59,11 +58,11 @@ public class InstructorController {
 
     @PutMapping(path = "/{id:[0-9]+}")
     public ResponseEntity<InstructorVO> putOneAction(@PathVariable(name = "id") long id,
-                                                     @Validated @RequestBody MartialArtistRegisterForm form) {
+                                                     @Validated @RequestBody InstructorForm form) {
         var entityOptional = this.service.findOneById(id);
 
         if (entityOptional.isPresent()) {
-            var updated = this.service.update(id, (InstructorEntity) form.toEntity());
+            var updated = this.service.update(id, form.toEntity());
 
             return ResponseEntity.ok(InstructorVO.fromBLL(updated));
         }
@@ -76,10 +75,8 @@ public class InstructorController {
 
     }
 
-
     @DeleteMapping(path = "/{id:[0-9]+}")
-    public ResponseEntity<InstructorVO> deleteOneAction(@PathVariable(name =
-            "id") long id) {
+    public ResponseEntity<InstructorVO> deleteOneAction(@PathVariable(name = "id") long id) {
 
         var entity = service.findOneById(id)
                 .orElseThrow(() -> new NotFoundException("Instructor id=" + id + " " +

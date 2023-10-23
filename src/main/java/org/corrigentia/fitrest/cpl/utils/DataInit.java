@@ -1,10 +1,7 @@
 package org.corrigentia.fitrest.cpl.utils;
 
 import org.corrigentia.fitrest.adal.domain.entity.*;
-import org.corrigentia.fitrest.adal.domain.entity.security.InstructorEntity;
-import org.corrigentia.fitrest.adal.domain.entity.security.RoleType;
-import org.corrigentia.fitrest.adal.domain.entity.security.StudentEntity;
-import org.corrigentia.fitrest.adal.domain.entity.security.UserEntity;
+import org.corrigentia.fitrest.adal.domain.entity.security.*;
 import org.corrigentia.fitrest.adal.repo.*;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
@@ -13,7 +10,9 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.Set;
+import java.util.HashSet;
+import java.util.List;
+//import java.util.Set;
 
 @Component
 public class DataInit implements InitializingBean {
@@ -325,7 +324,9 @@ public class DataInit implements InitializingBean {
         jigoroKano.setFirstName("Jigorō");
         jigoroKano.setEmail("jigoro.kano@judo.jp");
         jigoroKano.setPassword(this.passwordEncoder.encode("Seiryoku Zen'yō to Jita Kyōei"));
-        jigoroKano.setOwnedEquipments(Set.of(uniform3000));
+//        jigoroKano.setOwnedEquipments(new HashSet<>());
+        // didn't know Set.of() at one point...
+        jigoroKano.setOwnedEquipments(new HashSet<>(List.of(uniform3000)));
         jigoroKano.setRole(RoleType.INSTRUCTOR);
         this.instructorRepository.save(jigoroKano);
 
@@ -334,7 +335,8 @@ public class DataInit implements InitializingBean {
         moriheiUeshiba.setFirstName("Morihei");
         moriheiUeshiba.setEmail("morihei.ueshiba@aikido.jp");
         moriheiUeshiba.setPassword(this.passwordEncoder.encode("Moritaka"));
-        moriheiUeshiba.setOwnedEquipments(Set.of(bokken200, jo100, tanto25));
+        moriheiUeshiba.setOwnedEquipments(new HashSet<>(List.of(bokken200,
+                jo100, tanto25)));
         moriheiUeshiba.setRole(RoleType.INSTRUCTOR);
         this.instructorRepository.save(moriheiUeshiba);
 
@@ -344,7 +346,7 @@ public class DataInit implements InitializingBean {
         gichinFunakoshi.setEmail("gichin.funakoshi@karate.okinawa");
         gichinFunakoshi.setPassword(this.passwordEncoder.encode("House of Waving Pines"));
         // gichinFunakoshi.setOwnedEquipments(uniform...); // < 3000
-        // gichinFunakoshi.setMartialArtRanks( Set.of( d5Karate ) );
+        // gichinFunakoshi.setMartialArtRanks( new HashSet<>(List.of( d5Karate ) );
         gichinFunakoshi.setRole(RoleType.INSTRUCTOR);
         this.instructorRepository.save(gichinFunakoshi);
 
@@ -395,13 +397,13 @@ public class DataInit implements InitializingBean {
         choiHonghi.setLastName("Hong-hi");
         choiHonghi.setEmail("choi.honghi@tkd.kp");
         choiHonghi.setPassword(this.passwordEncoder.encode("Foot-Fist_Art"));
-        // choiHonghi.setMartialArtRanks(Set.of( d9TKD, d2Karate ));
-        choiHonghi.setOwnedEquipments(Set.of(
+        // choiHonghi.setMartialArtRanks(new HashSet<>(List.of( d9TKD, d2Karate ));
+        choiHonghi.setOwnedEquipments(new HashSet<>(List.of(
                 /*
                  * bo200, nunchaku, kali, danBong, kama, bokken, sansetsukon, katana15, tanto10,
                  * tonfa5
                  */
-        ));
+        )));
         choiHonghi.setRole(RoleType.INSTRUCTOR);
         this.instructorRepository.save(choiHonghi);
 
@@ -509,20 +511,22 @@ public class DataInit implements InitializingBean {
         gottfriedRyanCostache.setLastName("Costache");
         gottfriedRyanCostache.setEmail("ryan.costache@gmail.com");
         gottfriedRyanCostache.setPassword(this.passwordEncoder.encode("Test1234=."));
-        gottfriedRyanCostache.setOwnedEquipments(Set.of(tanto25, jo100));
-        gottfriedRyanCostache.setClassesTaken(Set.of(ueshibaAikido));
+        gottfriedRyanCostache.addOwnedEquipment(tanto25);
+        gottfriedRyanCostache.addOwnedEquipment(jo100);
+//        gottfriedRyanCostache.setOwnedEquipments(new HashSet<>(List.of(tanto25, jo100)));
+//        gottfriedRyanCostache.setClassesTaken(new HashSet<>(List.of(ueshibaAikido)));
+        gottfriedRyanCostache.addClassTaken(ueshibaAikido);
         gottfriedRyanCostache.setRole(RoleType.USER);
         this.studentRepository.save(gottfriedRyanCostache);
         // endregion;
 
         // region AdminUser
-
-        final UserEntity admin = new UserEntity();
+        final UserEntity admin = new AdminEntity();
         admin.setEmail("admin@site.com");
         admin.setRole(RoleType.ADMIN);
         admin.setPassword(passwordEncoder.encode("Test1234=."));
+        admin.setFirstName("Super");
         userRepository.save(admin);
-
         // endregion;
     }
 }

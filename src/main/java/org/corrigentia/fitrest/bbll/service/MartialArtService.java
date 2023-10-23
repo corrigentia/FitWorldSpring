@@ -24,7 +24,7 @@ public interface MartialArtService {
 
     Optional<MartialArtEntity> findOneById(long id);
 
-    void insert(MartialArtEntity entity);
+    MartialArtEntity insert(MartialArtEntity entity);
 
     MartialArtEntity update(long id, MartialArtEntity entity);
 

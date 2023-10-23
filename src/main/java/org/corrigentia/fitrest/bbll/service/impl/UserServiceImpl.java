@@ -2,6 +2,9 @@ package org.corrigentia.fitrest.bbll.service.impl;
 
 import org.corrigentia.fitrest.adal.domain.entity.security.RoleType;
 import org.corrigentia.fitrest.adal.domain.entity.security.UserEntity;
+import org.corrigentia.fitrest.adal.repo.AdminRepository;
+import org.corrigentia.fitrest.adal.repo.InstructorRepository;
+import org.corrigentia.fitrest.adal.repo.StudentRepository;
 import org.corrigentia.fitrest.adal.repo.UserRepository;
 import org.corrigentia.fitrest.bbll.service.UserService;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,10 +17,16 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AdminRepository adminRepository;
+    private final InstructorRepository instructorRepository;
+    private final StudentRepository studentRepository;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, AdminRepository adminRepository, InstructorRepository instructorRepository, StudentRepository studentRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.adminRepository = adminRepository;
+        this.instructorRepository = instructorRepository;
+        this.studentRepository = studentRepository;
     }
 
     /*
@@ -52,10 +61,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("E-mail not registered"));
     }
 
-    /**
-     * @param user
-     * @return
-     */
     @Override
     public UserEntity register(UserEntity user) {
         if (userRepository.existsByEmail(user.getUsername())) {
@@ -67,10 +72,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    /**
-     * @param user
-     * @return
-     */
     @Override
     public UserEntity signIn(UserEntity user) {
         UserEntity existingUser =
@@ -80,6 +81,4 @@ public class UserServiceImpl implements UserService {
         }
         return existingUser;
     }
-
-
 }

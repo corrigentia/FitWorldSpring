@@ -17,7 +17,7 @@ public class StudentVO {
     private long id;
     private String firstName;
     private String lastName;
-    private String username;
+    private String email;
     private String password;
     private LocalDate createdAt;
     private LocalDate updatedAt;
@@ -30,7 +30,7 @@ public class StudentVO {
                 .id(bll.getId())
                 .firstName(bll.getFirstName())
                 .lastName(bll.getLastName())
-                .username(bll.getUsername())
+                .email(bll.getUsername())
                 .password(bll.getPassword())
                 .createdAt(bll.getCreatedAt())
                 .updatedAt(bll.getUpdatedAt())

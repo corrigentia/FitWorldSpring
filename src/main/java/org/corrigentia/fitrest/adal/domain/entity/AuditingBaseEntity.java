@@ -16,7 +16,8 @@ import java.time.LocalDate;
 @Getter
 //@Setter(AccessLevel.PROTECTED)
 @Setter
-@ToString
+//@ToString(of = {"id"}, callSuper = true)
+@ToString(callSuper = true)
 @RequiredArgsConstructor
 @EntityListeners(value = {AuditingEntityListener.class})
 //@Inheritance()
@@ -28,6 +29,7 @@ public class AuditingBaseEntity extends Deletable {
     // must be GenerationType.TABLE for InheritanceType.TABLE_PER_CLASS
 //    @GeneratedValue(strategy = GenerationType.TABLE)
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @ToString.Include
     private Long id;
 
     @CreatedDate

@@ -1,21 +1,20 @@
 package org.corrigentia.fitrest.cpl.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.corrigentia.fitrest.adal.domain.entity.security.MartialArtistEntity;
 import org.corrigentia.fitrest.adal.domain.entity.security.StudentEntity;
 import org.corrigentia.fitrest.adal.domain.entity.security.UserEntity;
 import org.corrigentia.fitrest.bbll.service.UserService;
 import org.corrigentia.fitrest.cpl.utils.JwtUtil;
 import org.corrigentia.fitrest.model.dto.UserTokenDTO;
 import org.corrigentia.fitrest.model.vo.LoginForm;
-import org.corrigentia.fitrest.model.vo.MartialArtistRegisterForm;
+import org.corrigentia.fitrest.model.vo.StudentForm;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin // (origins = { "http://localhost:4200" })
+@CrossOrigin(origins = {"http://localhost:4200"}, allowCredentials = "true")
 public class SecurityController {
     private final JwtUtil util;
     private final PasswordEncoder passwordEncoder;
@@ -30,12 +29,14 @@ public class SecurityController {
 
     // @CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8080"})
     @GetMapping(path = "/register")
-//    public ResponseEntity<AuthResponse> getRegisterAction(@RequestBody LoginForm form) {
-//    public ResponseEntity<AuthResponse> getRegisterAction(@RequestBody MartialArtistRegisterForm form) {
-    public ResponseEntity<UserTokenDTO> getRegisterAction(@RequestBody MartialArtistRegisterForm form) {
-//        return ResponseEntity.ok(null);
-//        UserEntity entity = new UserEntity();
-        MartialArtistEntity entity = new MartialArtistEntity();
+    // public ResponseEntity<AuthResponse> getRegisterAction(@RequestBody LoginForm
+    // form) {
+    // public ResponseEntity<AuthResponse> getRegisterAction(@RequestBody
+    // StudentForm form) {
+    public ResponseEntity<UserTokenDTO> getRegisterAction(@RequestBody StudentForm form) {
+        // return ResponseEntity.ok(null);
+        // UserEntity entity = new UserEntity();
+        StudentEntity entity = new StudentEntity();
 
         entity.setFirstName(form.firstName);
         entity.setLastName(form.lastName);
@@ -43,10 +44,10 @@ public class SecurityController {
         entity.setEmail(form.email);
         entity.setPassword(passwordEncoder.encode(form.password));
 
-//        entity.setCreatedAt(LocalDate.now());
+        // entity.setCreatedAt(LocalDate.now());
 
-//        UserDetails user = securityService.insert(entity);
-//        return ResponseEntity.ok(new AuthResponse(util.generateToken(user), user));
+        // UserDetails user = securityService.insert(entity);
+        // return ResponseEntity.ok(new AuthResponse(util.generateToken(user), user));
 
         UserEntity user = securityService.register(form.toEntity());
         UserTokenDTO dto = UserTokenDTO.fromEntity(user);
@@ -56,26 +57,25 @@ public class SecurityController {
     }
 
     @PostMapping(path = "/register")
-//    public ResponseEntity<AuthResponse>
+    // public ResponseEntity<AuthResponse>
     public ResponseEntity<UserTokenDTO>
-//    registerAction(@RequestBody LoginForm form) {
-    registerAction(@RequestBody MartialArtistRegisterForm form) {
-//        return ResponseEntity.ok(null);
-//        UserEntity entity = new UserEntity();
+        // registerAction(@RequestBody LoginForm form) {
+    registerAction(@RequestBody StudentForm form) {
+        // return ResponseEntity.ok(null);
+        // UserEntity entity = new UserEntity();
         // final MartialArtistEntity entity = new MartialArtistEntity();
         StudentEntity entity = new StudentEntity();
 
         entity.setFirstName(form.firstName);
         entity.setLastName(form.lastName);
 
-//        entity.setCreatedAt(LocalDate.now());
+        // entity.setCreatedAt(LocalDate.now());
 
         entity.setEmail(form.email);
         entity.setPassword(passwordEncoder.encode(form.password));
 
-//        UserDetails user = securityService.insert(entity);
-//        return ResponseEntity.ok(new AuthResponse(util.generateToken(user), user));
-
+        // UserDetails user = securityService.insert(entity);
+        // return ResponseEntity.ok(new AuthResponse(util.generateToken(user), user));
 
         UserEntity user = securityService.register(form.toEntity());
         UserTokenDTO dto = UserTokenDTO.fromEntity(user);
@@ -85,31 +85,27 @@ public class SecurityController {
     }
 
     @PostMapping(path = "/signIn")
-//    public ResponseEntity<AuthResponse> signInAction(HttpServletRequest request,
+    // public ResponseEntity<AuthResponse> signInAction(HttpServletRequest request,
     public ResponseEntity<UserTokenDTO> signInAction(HttpServletRequest request,
                                                      @RequestBody LoginForm form) {
-
-
         System.out.println("trying to sign in");
         System.out.println(request);
-//        UserDetails user = securityService.loadUserByUsername(form.email);
+        // UserDetails user = securityService.loadUserByUsername(form.email);
         UserEntity user = (UserEntity) securityService.loadUserByUsername(form.email);
-
-//        UserEntity user=securityService.signIn(form.toEntity());
-
-
+        // UserEntity user=securityService.signIn(form.toEntity());
+        System.out.println(user);
+        System.out.println(user.getPassword());
+        System.out.println(form.password);
         if (passwordEncoder.matches(form.password, user.getPassword())) {
-
-//            return ResponseEntity.ok(new AuthResponse(util.generateToken(user), user));
-
-
+            // return ResponseEntity.ok(new AuthResponse(util.generateToken(user), user));
             UserTokenDTO dto = UserTokenDTO.fromEntity(user);
+            System.out.println(dto);
             String token = util.generateToken(user);
+            System.out.println(token);
             dto.setToken(token);
+            System.out.println(dto);
             return ResponseEntity.ok(dto);
-
         }
-
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
     }
 }

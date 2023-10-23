@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = { "http://localhost:4200" },allowCredentials = "true")
 @RequestMapping(path = {"/api/classes", "/api/martial-art-classes"})
 public class MartialArtClassSearchController {
     private final MartialArtClassService service;

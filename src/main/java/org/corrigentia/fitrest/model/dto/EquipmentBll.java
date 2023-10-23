@@ -2,6 +2,8 @@ package org.corrigentia.fitrest.model.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+
 import org.corrigentia.fitrest.adal.domain.entity.EquipmentEntity;
 
 @Data

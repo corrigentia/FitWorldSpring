@@ -16,10 +16,17 @@ import java.io.IOException;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
+    // did nothing here
+    //    @Qualifier("studentServiceImpl")
     private final UserDetailsService userDetailsService;
     private final JwtUtil util;
 
-    public JwtFilter(UserDetailsService userDetailsService, JwtUtil util) {
+    public JwtFilter(
+            // this is where @Qualifier goes, inside the constructor, for an
+            // argument, but I had to remove it for implementation reasons;
+            // conflicts arose, still potentially useful in different situations
+//            @Qualifier("studentServiceImpl")
+            UserDetailsService userDetailsService, JwtUtil util) {
         this.userDetailsService = userDetailsService;
         this.util = util;
     }
@@ -49,7 +56,7 @@ public class JwtFilter extends OncePerRequestFilter {
         System.out.println("request: " + request);
         System.out.println();
 
-// "Bearer asdfsaerxcvrtsdsdaf"
+        // "Bearer asdfsaerxcvrtsdsdaf"
         String authorization = request.getHeader("Authorization");
 
         System.out.println();
@@ -61,18 +68,24 @@ public class JwtFilter extends OncePerRequestFilter {
             String type = authorizations[0];
             String token = authorizations[1];
 
-            if (!token.isEmpty() && !"null".equalsIgnoreCase(token) && "Bearer".equals(type)) {
+            if (!token.isEmpty() && !"null".equalsIgnoreCase(token) &&
+                    "Bearer".equals(type)) {
 
                 System.out.println();
-//                System.out.println("token: " + token);
+                System.out.println("token: \n" + token);
                 System.out.println();
 
-                // TODO: 06-10-23 : I might need to change this to getEmail 
-                String username = util.getUsernameFromToken(token);
-                UserDetails user = userDetailsService.loadUserByUsername(username);
+                // TODO: 06-10-23 : I might need to change this to getEmail
+                String email = util.getEmail(token);
+                UserDetails user = userDetailsService.loadUserByUsername(email);
 
-                if (util.validateToken(token, user)) {
-                    UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(user, null,
+                // if (util.validateToken(token, user)) {
+                if (util.isValid(token)) {
+//                    didn't know `var` at one point...
+//                    var upat = new UsernamePasswordAuthenticationToken(user,
+                    UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(user,
+                            /*null,*/
+                            token,
                             user.getAuthorities());
 
                     SecurityContextHolder.getContext().setAuthentication(upat);

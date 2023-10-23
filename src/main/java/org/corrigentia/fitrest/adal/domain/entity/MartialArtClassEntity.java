@@ -1,29 +1,20 @@
 package org.corrigentia.fitrest.adal.domain.entity;
 
-import java.time.LocalDateTime;
-
-import org.corrigentia.fitrest.adal.domain.entity.security.InstructorEntity;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.corrigentia.fitrest.adal.domain.entity.security.InstructorEntity;
 
+import java.time.LocalDateTime;
+
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @Getter
 @Setter
 @Entity
 @Table(name = MartialArtClassEntity.TABLE_NAME, uniqueConstraints = @UniqueConstraint(name = "uc_martial_art_class", columnNames = {
-        "instructor_id", "date_time" }))
+        "instructor_id", "date_time"}))
 @Data
 // @JavaBean // didn't solve @Inject/@AutoWired martialArtClassEntity
 public class MartialArtClassEntity extends Deletable {

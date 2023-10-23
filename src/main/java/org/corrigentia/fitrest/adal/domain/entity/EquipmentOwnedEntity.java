@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
+@ToString(callSuper = true)
 @Getter
 @Setter
 @Entity
@@ -22,5 +24,4 @@ public class EquipmentOwnedEntity {
     @ManyToOne(optional = false)
     @JoinColumn(name = "equipment_id", nullable = false)
     private EquipmentEntity equipment;
-
 }

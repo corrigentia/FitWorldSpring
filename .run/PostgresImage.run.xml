@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="PostgresImage" type="docker-deploy" factoryName="docker-image" editBeforeRun="true" focusToolWindowBeforeRun="true" singleton="false" server-name="Docker">
+    <deployment type="docker-image">
+      <settings>
+        <option name="imageTag" value="postgres:latest" />
+        <option name="attachToContainerNeeded" value="true" />
+        <option name="containerName" value="Postgres_Container" />
+        <option name="showCommandPreview" value="true" />
+      </settings>
+    </deployment>
+    <method v="2" />
+  </configuration>
+</component>

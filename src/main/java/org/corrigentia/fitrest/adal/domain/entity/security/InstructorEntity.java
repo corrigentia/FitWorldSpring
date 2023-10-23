@@ -3,6 +3,8 @@ package org.corrigentia.fitrest.adal.domain.entity.security;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Transient;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -10,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @Entity(name = "Instructor")
 // @Table(name = "instructor")
 @Data
@@ -39,5 +43,4 @@ public class InstructorEntity extends MartialArtistEntity {
         authorities.add(authority);
         return authorities;
     }
-
 }

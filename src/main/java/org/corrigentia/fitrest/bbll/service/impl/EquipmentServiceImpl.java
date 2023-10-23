@@ -44,14 +44,12 @@ public class EquipmentServiceImpl implements EquipmentService {
     @Override
     public Page<EquipmentEntity> findByEnabledTrue(int page, int size,
                                                    Sort sort) {
-        return repository.findByEnabledTrue(PageRequest.of(page
-                , size, sort));
+        return repository.findByEnabledTrue(PageRequest.of(page, size, sort));
     }
 
     @Override
     public Page<EquipmentEntity> findByEnabledTrue(int page, int size) {
-        return repository.findByEnabledTrue(PageRequest.of(page
-                , size, Sort.by("id").ascending()));
+        return repository.findByEnabledTrue(PageRequest.of(page, size, Sort.by("id").ascending()));
     }
 
     @Override
@@ -66,13 +64,13 @@ public class EquipmentServiceImpl implements EquipmentService {
     @Override
     public void insert(EquipmentEntity entity) {
         repository.save(entity);
-//        return entity;
+        // return entity;
     }
 
     @Override
     public EquipmentEntity update(long id, EquipmentEntity entity) {
         // TODO Auto-generated method stub
-        var toUpdate = repository.findById(id)
+        EquipmentEntity toUpdate = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Equipment id=" + id + " not found"));
 
         toUpdate.setPrice(entity.getPrice());
@@ -80,7 +78,7 @@ public class EquipmentServiceImpl implements EquipmentService {
 
         repository.save(toUpdate);
         return toUpdate;
-//        return Optional.empty();
+        // return Optional.empty();
     }
 
     /**
@@ -89,15 +87,25 @@ public class EquipmentServiceImpl implements EquipmentService {
      */
     @Override
     public EquipmentEntity delete(long id) {
-        var toDelete = repository.findById(id);
+        Optional<EquipmentEntity> toDelete = repository.findById(id);
 
         if (toDelete.isPresent()) {
-            var entity = toDelete.get();
+            EquipmentEntity entity = toDelete.get();
             entity.setEnabled(false);
             this.repository.save(entity);
             return entity;
         }
         throw new NotFoundException("Equipment id=" + id + " not found");
+    }
+
+    @Override
+    public EquipmentEntity findEquipmentByName(String name) throws NotFoundException {
+        Optional<EquipmentEntity> entityOptional = repository.findFirstByNameAllIgnoreCase(name);
+
+        if (entityOptional.isPresent()) {
+            return entityOptional.get();
+        }
+        throw new NotFoundException("Equipment name=" + name + " not found");
     }
 
     /*
@@ -111,7 +119,7 @@ public class EquipmentServiceImpl implements EquipmentService {
      * this.martialArtistRepository.findById(ownerId).orElseThrow(() -> new
      * NotFoundException( "Martial Artist id=" + ownerId + " not found"));
      */
-//        owner.ownedEquipmen
+    // owner.ownedEquipmen
     /*
      * }
      */

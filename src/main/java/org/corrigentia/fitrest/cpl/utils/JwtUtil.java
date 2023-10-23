@@ -6,14 +6,11 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import org.corrigentia.fitrest.adal.domain.entity.security.UserEntity;
 import org.corrigentia.fitrest.cpl.config.jwt.JwtConfig;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 @Component
 public class JwtUtil {
@@ -30,30 +27,36 @@ public class JwtUtil {
     }
 
     /*
-    public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>(20);
-        claims.put("roles",
-                userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList().toArray());
-
-        System.out.println("generateToken(final UserDetails userDetails)");
-        System.out.println("this.generateToken(claims,
-        userDetails.getUsername()):
-        "
-                + generateToken(claims, userDetails.getUsername()));
-        return generateToken(claims, userDetails.getUsername());
-    }
-    */
+     * public String generateToken(UserDetails userDetails) {
+     * Map<String, Object> claims = new HashMap<>(20);
+     * claims.put("roles",
+     * userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).
+     * toList().toArray());
+     *
+     * System.out.println("generateToken(final UserDetails userDetails)");
+     * System.out.println("this.generateToken(claims,
+     * userDetails.getUsername()):
+     * "
+     * + generateToken(claims, userDetails.getUsername()));
+     * return generateToken(claims, userDetails.getUsername());
+     * }
+     */
     public String generateToken(UserEntity user) {
         return builder
                 .claim("id", user.getId())
-                .claim("email", user.getUsername())
+                .claim("email", user.getEmail())
                 .claim("role", user.getRole())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + config.expireAt * 1000L))
+                .setExpiration(new Date(System.currentTimeMillis() + config.expireAt * 1_000L))
                 .compact();
     }
 
     public Claims getClaims(String token) {
+        System.out.println("in JwtUtil.getClaims: token");
+        System.out.println(token);
+        System.out.println(parser.parseClaimsJws(token));
+        System.out.println(parser.parseClaimsJws(token).getBody());
+
         return parser.parseClaimsJws(token).getBody();
     }
 
@@ -62,6 +65,8 @@ public class JwtUtil {
     }
 
     public String getEmail(String token) {
+        System.out.println("in JwtUtil.getEmail: token");
+        System.out.println(token);
         return getClaims(token).get("email", String.class);
     }
 
@@ -75,50 +80,69 @@ public class JwtUtil {
         return getRole(token) != null && now.after(claims.getIssuedAt()) && now.before(claims.getExpiration());
     }
 
-    public List<String> getAuthoritiesFromToken(String token) {
-        System.out.println("getAuthoritiesFromToken(final String token)");
-        System.out.println("token: " + token);
-        return getClaimFromToken(
-                token,
-                claims -> claims.get(
-                        "roles",
-                        List.class));
-    }
+    // removed because it returned null...
+    /*
+     * public <T> T getClaimFromToken(String token, Function<Claims, T>
+     * claimsResolver) {
+     * System.out.
+     * println("getClaimFromToken(final String token, final Function<Claims, T> claimsResolver)"
+     * );
+     * // System.out.println("token: " + token);
+     * // System.out.println("this.getClaimsFromToken(token): " +
+     * // this.getClaimsFromToken(token));
+     * System.out.println("token: \n" + token);
+     * Claims claims = getClaimsFromToken(token);
+     * System.out.println(claims);
+     * System.out.println(claimsResolver);
+     * System.out.println(claimsResolver.apply(claims)); // null
+     * return claimsResolver.apply(claims); // null
+     * }
+     */
 
-    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-        System.out.println("getClaimFromToken(final String token, final Function<Claims, T> claimsResolver)");
-        // System.out.println("token: " + token);
-        // System.out.println("this.getClaimsFromToken(token): " +
-        // this.getClaimsFromToken(token));
-        Claims claims = getClaimsFromToken(token);
-        return claimsResolver.apply(claims);
-    }
+    // removed because it depended on bad code
+    /*
+     * public List<String> getAuthoritiesFromToken(String token) {
+     * System.out.println("getAuthoritiesFromToken(final String token)");
+     * System.out.println("token: " + token);
+     * return getClaimFromToken(
+     * token,
+     * claims -> claims.get(
+     * "roles",
+     * List.class));
+     * }
+     *
+     * public Date getExpirationDateFromToken(String token) {
+     * System.out.println("getExpirationDateFromToken(final String token)");
+     * System.out.println("token: " + token);
+     * return getClaimFromToken(token, Claims::getExpiration);
+     * }
+     *
+     * public String getUsernameFromToken(String token) {
+     * System.out.println("getUsernameFromToken(final String token)");
+     * System.out.println("token: \n" + token);
+     * System.out.println(getClaimFromToken(token, Claims::getSubject));
+     * return getClaimFromToken(token, Claims::getSubject);
+     * }
+     *
+     * public boolean isExpired(String token) {
+     * System.out.println("isExpired(final String token)");
+     * System.out.println("token: " + token);
+     * Date expiration = getClaimFromToken(token, Claims::getExpiration);
+     * return expiration.before(new Date());
+     * }
+     */
 
-    public Date getExpirationDateFromToken(String token) {
-        System.out.println("getExpirationDateFromToken(final String token)");
-        System.out.println("token: " + token);
-        return getClaimFromToken(token, Claims::getExpiration);
-    }
-
-    public String getUsernameFromToken(String token) {
-        System.out.println("getUsernameFromToken(final String token)");
-        // System.out.println("token: " + token);
-        return getClaimFromToken(token, Claims::getSubject);
-    }
-
-    public boolean isExpired(String token) {
-        System.out.println("isExpired(final String token)");
-        System.out.println("token: " + token);
-        Date expiration = getClaimFromToken(token, Claims::getExpiration);
-        return expiration.before(new Date());
-    }
-
-    public boolean validateToken(String token, UserDetails userDetails) {
-        System.out.println("validateToken(final String token, final UserDetails userDetails)");
-        System.out.println("token: " + token);
-        boolean hasSameSubject = getUsernameFromToken(token).equals(userDetails.getUsername());
-        return !isExpired(token) && hasSameSubject;
-    }
+    // removed because it depended on code that depended on bad method
+    /*
+     * public boolean validateToken(String token, UserDetails userDetails) {
+     * System.out.
+     * println("validateToken(final String token, final UserDetails userDetails)");
+     * System.out.println("token: " + token);
+     * boolean hasSameSubject =
+     * getUsernameFromToken(token).equals(userDetails.getUsername());
+     * return !isExpired(token) && hasSameSubject;
+     * }
+     */
 
     private String generateToken(Map<String, Object> claims, String subject) {
 

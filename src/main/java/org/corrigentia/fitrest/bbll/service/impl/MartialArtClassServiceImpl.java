@@ -1,7 +1,12 @@
 package org.corrigentia.fitrest.bbll.service.impl;
 
-import jakarta.ws.rs.NotFoundException;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
 import org.corrigentia.fitrest.adal.domain.entity.MartialArtClassEntity;
+import org.corrigentia.fitrest.adal.domain.entity.MartialArtEntity;
+import org.corrigentia.fitrest.adal.domain.entity.security.InstructorEntity;
 import org.corrigentia.fitrest.adal.repo.InstructorRepository;
 import org.corrigentia.fitrest.adal.repo.MartialArtClassRepository;
 import org.corrigentia.fitrest.adal.repo.MartialArtRepository;
@@ -11,9 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import jakarta.ws.rs.NotFoundException;
 
 @Service
 public class MartialArtClassServiceImpl implements MartialArtClassService {
@@ -21,7 +24,8 @@ public class MartialArtClassServiceImpl implements MartialArtClassService {
     private final MartialArtRepository martialArtRepository;
     private final InstructorRepository instructorRepository;
 
-    public MartialArtClassServiceImpl(final MartialArtClassRepository classRepository, MartialArtRepository martialArtRepository, InstructorRepository instructorRepository) {
+    public MartialArtClassServiceImpl(final MartialArtClassRepository classRepository,
+            MartialArtRepository martialArtRepository, InstructorRepository instructorRepository) {
         this.martialArtClassRepository = classRepository;
         this.martialArtRepository = martialArtRepository;
         this.instructorRepository = instructorRepository;
@@ -40,7 +44,7 @@ public class MartialArtClassServiceImpl implements MartialArtClassService {
 
     @Override
     public Page<MartialArtClassEntity> findByEnabledTrue(final int page, final int size,
-                                                         final Sort sort) {
+            final Sort sort) {
         return martialArtClassRepository.findAll(PageRequest.of(page,
                 size, sort));
     }
@@ -69,8 +73,8 @@ public class MartialArtClassServiceImpl implements MartialArtClassService {
      */
     @Override
     public List<MartialArtClassEntity> getByInstructorId(final long id) {
-        final var entity =
-                instructorRepository.findById(id).orElseThrow(() -> new NotFoundException("Instructor id=" + id + " not found"));
+        final InstructorEntity entity = instructorRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Instructor id=" + id + " not found"));
         return martialArtClassRepository.getByInstructor(entity);
     }
 
@@ -80,8 +84,8 @@ public class MartialArtClassServiceImpl implements MartialArtClassService {
      */
     @Override
     public List<MartialArtClassEntity> getByMartialArtId(final long id) {
-        final var entity =
-                martialArtRepository.findById(id).orElseThrow(() -> new NotFoundException("Martial Art id=" + id + " not found"));
+        final MartialArtEntity entity = martialArtRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Martial Art id=" + id + " not found"));
         return martialArtClassRepository.getByMartialArt(entity);
     }
 
@@ -92,7 +96,7 @@ public class MartialArtClassServiceImpl implements MartialArtClassService {
     @Override
     public Optional<MartialArtClassEntity> findOneById(final long id) {
         return martialArtClassRepository.findById(id);
-//        return Optional.empty();
+        // return Optional.empty();
     }
 
     /**
@@ -111,7 +115,7 @@ public class MartialArtClassServiceImpl implements MartialArtClassService {
     @Override
     public MartialArtClassEntity update(final long id, final MartialArtClassEntity entity) {
         // TODO Auto-generated method stub
-        final var toUpdate = this.martialArtClassRepository.findById(id)
+        final MartialArtClassEntity toUpdate = this.martialArtClassRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Equipment id=" + id + " not found"));
 
         toUpdate.setMartialArt(entity.getMartialArt());
@@ -121,7 +125,7 @@ public class MartialArtClassServiceImpl implements MartialArtClassService {
 
         this.martialArtClassRepository.save(toUpdate);
         return toUpdate;
-//        return Optional.empty();
+        // return Optional.empty();
     }
 
     /**
@@ -130,10 +134,10 @@ public class MartialArtClassServiceImpl implements MartialArtClassService {
      */
     @Override
     public MartialArtClassEntity delete(final long id) {
-        final var toDelete = this.martialArtClassRepository.findById(id);
+        final Optional<MartialArtClassEntity> toDelete = this.martialArtClassRepository.findById(id);
 
         if (toDelete.isPresent()) {
-            final var entity = toDelete.get();
+            final MartialArtClassEntity entity = toDelete.get();
             entity.setEnabled(false);
             martialArtClassRepository.save(entity);
             return entity;

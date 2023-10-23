@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = { "http://localhost:4200" },allowCredentials = "true")
 @RequestMapping(path = "/api/equipments")
 public class EquipmentSearchController {
     private final EquipmentService service;

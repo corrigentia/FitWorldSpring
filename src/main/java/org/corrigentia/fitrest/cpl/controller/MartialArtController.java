@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin // (origins = {"http://localhost:4200"})
+@CrossOrigin(origins = {"http://localhost:4200"}, allowCredentials = "true")
 @RequestMapping(path = "/api/martialArts")
 public class MartialArtController {
 
@@ -54,6 +54,8 @@ public class MartialArtController {
 
     @PostMapping(path = {"", "/"})
     public ResponseEntity<MartialArtVO> postMartialArtAction(@Validated @RequestBody final MartialArtForm form) {
+        System.out.println("form : ");
+        System.out.println(form);
         final MartialArtEntity entity = form.toEntity();
 
         this.service.insert(entity);

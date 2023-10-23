@@ -11,31 +11,53 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true, of = {"id", "email", "role"})
+//@EqualsAndHashCode(callSuper = true, of = {"id", "email", "role"})
+@EqualsAndHashCode(callSuper = true, of = {"email", "role"})
 @Setter
 @Entity(name = UserEntity.ENTITY_NAME)
 @Table(name = UserEntity.TABLE_NAME)
-@ToString(of = {"id", "email", "role"})
+//@ToString(of = {"id", "email", "role"})
+//@ToString(of = {"email", "role"}, callSuper = true)
+@ToString(callSuper = true)
 @RequiredArgsConstructor
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class UserEntity extends AuditingBaseEntity implements UserDetails {
+//@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+public abstract class UserEntity extends AuditingBaseEntity implements UserDetails {
     public static final String ENTITY_NAME = "User";
     public static final String TABLE_NAME = "security_user";
     public static final String COLUMN_ROLE_NAME = "role";
 
+    @Getter
     @Setter
-    @Column(unique = true, nullable = false, length = 150)
-    private String email;
+    @Column(nullable = false)
+    @ToString.Include
+    private String firstName;
 
     @Getter
     @Setter
-    private String password;
+    // @Column(nullable = false)
+    @Column(nullable = true)
+    @ToString.Include
+    private String lastName;
+
+    @Getter
+    @Setter
+    @Column(unique = true, nullable = false, length = 150)
+    @ToString.Include
+    private String email;
 
     @Enumerated(EnumType.STRING)
     @Column(name = COLUMN_ROLE_NAME, nullable = false)
     @Getter
     @Setter
+    @ToString.Include
     private RoleType role;
+
+
+    @Getter
+    @Setter
+    @ToString.Include
+    private String password;
 
     /**
      * Returns the authorities granted to the user. Cannot return {@code null}.
@@ -46,15 +68,14 @@ public class UserEntity extends AuditingBaseEntity implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         /*
-        final List<String> authorities = List.of("ROLE_USER");
-
-        return authorities.stream()
-                .map(SimpleGrantedAuthority::new)
-                .toList();
-        */
+         * final List<String> authorities = List.of("ROLE_USER");
+         *
+         * return authorities.stream()
+         * .map(SimpleGrantedAuthority::new)
+         * .toList();
+         */
         final List<GrantedAuthority> authorities = new ArrayList<>(20);
-        GrantedAuthority authority =
-                new SimpleGrantedAuthority(this.role.toString());
+        GrantedAuthority authority = new SimpleGrantedAuthority(this.role.toString());
 
         authorities.add(authority);
         return authorities;
@@ -82,7 +103,8 @@ public class UserEntity extends AuditingBaseEntity implements UserDetails {
     }
 
     /**
-     * Indicates whether the user's account has expired. An expired account cannot be
+     * Indicates whether the user's account has expired. An expired account cannot
+     * be
      * authenticated.
      *
      * @return {@code true} if the user's account is valid (ie non-expired),
