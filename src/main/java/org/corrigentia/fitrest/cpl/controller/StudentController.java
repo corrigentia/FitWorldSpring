@@ -97,7 +97,7 @@ public class StudentController {
                             "TechnofuturTIC\\FitWorld\\FitWorldAngular\\src" +
                             "\\assets\\images\\"
 //                            + file.getName());
-                            + file.getOriginalFilename());
+                            + file.getOriginalFilename());//
             System.out.println("path: \n" + path);
             Files.write(path, bytes);
             System.out.println("managed to write");
