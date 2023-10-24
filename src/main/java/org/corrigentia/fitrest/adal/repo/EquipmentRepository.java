@@ -11,6 +11,8 @@ import java.util.Optional;
 
 public interface EquipmentRepository
         extends JpaRepository<EquipmentEntity, Long>, JpaSpecificationExecutor<EquipmentEntity> {
+    boolean existsByNameAndPriceAllIgnoreCase(String name, double price);
+
     Optional<EquipmentEntity> findFirstByNameAllIgnoreCase(String name);
 
     List<EquipmentEntity> getByName(String name);

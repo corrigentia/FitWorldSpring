@@ -53,14 +53,14 @@ public class JwtFilter extends OncePerRequestFilter {
         System.out.println();
 
         System.out.println();
-        System.out.println("request: " + request);
+        System.out.println("request: \n" + request);
         System.out.println();
 
         // "Bearer asdfsaerxcvrtsdsdaf"
         String authorization = request.getHeader("Authorization");
 
         System.out.println();
-        System.out.println("authorization: " + authorization);
+        System.out.println("authorization: \n" + authorization);
         System.out.println();
 
         if (null != authorization) {
@@ -77,6 +77,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
                 // TODO: 06-10-23 : I might need to change this to getEmail
                 String email = util.getEmail(token);
+                System.out.println("email: \n" + email);
                 UserDetails user = userDetailsService.loadUserByUsername(email);
 
                 // if (util.validateToken(token, user)) {

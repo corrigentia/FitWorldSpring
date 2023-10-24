@@ -40,3 +40,4 @@ build/
 /hs_err_pid27056.log
 /doc/logfile.txt
 /*.log
+/nbproject/

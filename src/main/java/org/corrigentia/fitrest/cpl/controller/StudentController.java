@@ -1,11 +1,6 @@
 package org.corrigentia.fitrest.cpl.controller;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Optional;
-
+import jakarta.ws.rs.NotFoundException;
 import org.corrigentia.fitrest.adal.domain.entity.security.RoleType;
 import org.corrigentia.fitrest.adal.domain.entity.security.StudentEntity;
 import org.corrigentia.fitrest.bbll.service.StudentService;
@@ -18,23 +13,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.ws.rs.NotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = { "http://localhost:4200" }, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:4200"}, allowCredentials = "true")
 @RequestMapping(path = "/api/students")
 public class StudentController {
     private final StudentService studentService;
@@ -47,7 +36,7 @@ public class StudentController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PostMapping(path = { "/new" })
+    @PostMapping(path = {"/new"})
     public ResponseEntity<UserTokenDTO> postStudentAction(@Validated @RequestBody final StudentForm form) {
         final StudentEntity entity = form.toEntity();
         entity.setRole(RoleType.USER);
@@ -62,7 +51,7 @@ public class StudentController {
         return ResponseEntity.ok(dto);
     }
 
-    @PostMapping(path = { "/returning" })
+    @PostMapping(path = {"/returning"})
     public ResponseEntity<UserTokenDTO> signInStudentAction(@Validated @RequestBody final StudentForm form) {
         final StudentEntity registeredStudent = (StudentEntity) studentService.loadUserByUsername(form.email);
 
@@ -79,40 +68,53 @@ public class StudentController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
     }
 
-    @PostMapping(path = { "/{id:[0-9]+}/photo" })
-    @CrossOrigin(exposedHeaders = { "Set-Cookie" })
+    @PostMapping(path = {"/{id:[0-9]+}/photo"})
+    @CrossOrigin(exposedHeaders = {"Set-Cookie"})
     public ResponseEntity postStudentPhotoAction(@RequestPart final MultipartFile file) {
 
-        System.out.println();
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
         System.out.println("in upload spring");
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 
         System.out.println();
         System.out.println(file);
         System.out.println();
 
+        System.out.println(file.isEmpty());
+
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body(null);
-
         }
-
         try {
+            System.out.println("the file is not empty");
+            System.out.println(file.getName());
+            System.out.println(file.getOriginalFilename());
             // Get the file and save it somewhere
             final byte[] bytes = file.getBytes();
+            System.out.println("bytes: \n" + bytes);
             final Path path = Path.of(
-                    "C:\\Users\\gr.costache\\OneDrive - TechnofuturTIC\\FitWorld\\FitWorldAngular\\src\\assets\\images"
-                            + file.getName());
+                    "C:\\Users\\gr.costache\\OneDrive - " +
+                            "TechnofuturTIC\\FitWorld\\FitWorldAngular\\src" +
+                            "\\assets\\images\\"
+//                            + file.getName());
+                            + file.getOriginalFilename());
+            System.out.println("path: \n" + path);
             Files.write(path, bytes);
+            System.out.println("managed to write");
         } catch (final IOException e) {
+            System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+            System.out.println("didn't manage to save file");
+            System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+
             e.printStackTrace();
             // throw new RuntimeException(e);
 
             return ResponseEntity.badRequest().body(null);
-
         }
         return ResponseEntity.ok(null);
     }
 
-    @GetMapping(path = { "", "/" })
+    @GetMapping(path = {"", "/"})
     public ResponseEntity<List<StudentVO>> getAllAction(
             @RequestParam(defaultValue = "0", required = false) final int page,
             @RequestParam(defaultValue = "5", required = false) final int size) {
@@ -154,7 +156,7 @@ public class StudentController {
 
     @PutMapping(path = "/{id:[0-9]+}")
     public ResponseEntity<Object> putOneAction(@PathVariable(name = "id") final long id,
-            @Validated @RequestBody final StudentForm form) {
+                                               @Validated @RequestBody final StudentForm form) {
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");
         System.out.println("trying to update a student...");
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n");

@@ -54,7 +54,7 @@ public abstract class UserEntity extends AuditingBaseEntity implements UserDetai
     private RoleType role;
 
 
-    @Getter
+    //    @Getter
     @Setter
     @ToString.Include
     private String password;

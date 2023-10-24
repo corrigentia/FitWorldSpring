@@ -2,40 +2,69 @@ package org.corrigentia.fitrest.bbll.service.impl;
 
 import jakarta.ws.rs.NotFoundException;
 import org.corrigentia.fitrest.adal.domain.entity.EquipmentEntity;
-import org.corrigentia.fitrest.adal.repo.*;
+import org.corrigentia.fitrest.adal.domain.entity.EquipmentEntity_;
+import org.corrigentia.fitrest.adal.exceptions.EquipmentNamePriceException;
+import org.corrigentia.fitrest.adal.exceptions.EquipmentNullException;
+import org.corrigentia.fitrest.adal.repo.EquipmentRepository;
 import org.corrigentia.fitrest.bbll.service.EquipmentService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 public class EquipmentServiceImpl implements EquipmentService {
 
     private final EquipmentRepository repository;
 
-    public EquipmentServiceImpl(EquipmentRepository repository,
-                                StudentRepository studentRepository, InstructorRepository instructorRepository,
-                                MartialArtistRepository martialArtistRepository, UserRepository userRepository) {
+    public EquipmentServiceImpl(
+            EquipmentRepository repository /* ,
+            StudentRepository studentRepository,
+            InstructorRepository instructorRepository,
+            MartialArtistRepository martialArtistRepository,
+            UserRepository userRepository
+            */
+    ) {
         this.repository = repository;
     }
 
-    /**
-     * @param name
-     * @return
-     */
     @Override
-    public List<EquipmentEntity> getByName(final String name) {
-        return repository.getByName(name);
+    public EquipmentEntity insert(EquipmentEntity entity) {
+        if (entity == null) {
+            throw new EquipmentNullException();
+        }
+        if (repository.existsByNameAndPriceAllIgnoreCase(entity.getName(),
+                entity.getPrice())) {
+            throw new EquipmentNamePriceException();
+        }
+        return repository.save(entity);
+        // return entity;
     }
 
-    /**
-     * @param price
-     * @return
-     */
+    private Optional<EquipmentEntity> findBySpec(Specification<EquipmentEntity> specification) {
+        return this.repository.findBy(specification,
+                FluentQuery.FetchableFluentQuery::first);
+    }
+
+    private Stream<EquipmentEntity> findAllBySpec(Specification<EquipmentEntity> specification) {
+        return this.repository.findBy(specification,
+                FluentQuery.FetchableFluentQuery::stream);
+    }
+
+    @Override
+    public List<EquipmentEntity> getByName(final String name) {
+        Specification<EquipmentEntity> nameSpec = ((root, query,
+                                                    criteriaBuilder) -> criteriaBuilder.equal(root.get(EquipmentEntity_.NAME), name));
+        return findAllBySpec(nameSpec).toList();
+//        return repository.getByName(name);
+    }
+
     @Override
     public List<EquipmentEntity> getByPrice(final double price) {
         return repository.getByPrice(price);
@@ -57,16 +86,6 @@ public class EquipmentServiceImpl implements EquipmentService {
         return repository.findById(id);
     }
 
-    /**
-     * @param entity
-     * @return
-     */
-    @Override
-    public void insert(EquipmentEntity entity) {
-        repository.save(entity);
-        // return entity;
-    }
-
     @Override
     public EquipmentEntity update(long id, EquipmentEntity entity) {
         // TODO Auto-generated method stub
@@ -81,10 +100,6 @@ public class EquipmentServiceImpl implements EquipmentService {
         // return Optional.empty();
     }
 
-    /**
-     * @param id
-     * @return
-     */
     @Override
     public EquipmentEntity delete(long id) {
         Optional<EquipmentEntity> toDelete = repository.findById(id);
