@@ -8,6 +8,7 @@ import org.corrigentia.fitrest.adal.domain.entity.EquipmentEntity;
 import org.corrigentia.fitrest.bbll.service.impl.EquipmentRepositoryImpl;
 import org.junit.*;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -48,7 +49,7 @@ public class EquipmentRepositoryIT {
      * EquipmentRepository.
      */
     @Test
-    public void testExistsByNameAndPriceAllIgnoreCase() {
+    public void testExistsByNameAndPriceAllIgnoreCaseDefault() {
         System.out.println("existsByNameAndPriceAllIgnoreCase");
         String name = "";
         double price = 0.0;
@@ -57,7 +58,41 @@ public class EquipmentRepositoryIT {
         boolean result = instance.existsByNameAndPriceAllIgnoreCase(name, price);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+//        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of existsByNameAndPriceAllIgnoreCase method, of class
+     * EquipmentRepository.
+     */
+    @Test
+    public void testExistsByNameAndPriceAllIgnoreCase() {
+        System.out.println("existsByNameAndPriceAllIgnoreCase");
+        String name = "some name";
+        double price = 12.3456789;
+        EquipmentRepository instance = new EquipmentRepositoryImpl();
+        instance.save(new EquipmentEntity(name, price));
+        boolean expResult = true;
+        boolean result = instance.existsByNameAndPriceAllIgnoreCase(name, price);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+//        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of findFirstByNameAllIgnoreCase method, of class
+     * EquipmentRepository.
+     */
+    @Test
+    public void testFindFirstByNameAllIgnoreCaseDefault() {
+        System.out.println("findFirstByNameAllIgnoreCase");
+        String name = "";
+        EquipmentRepository instance = new EquipmentRepositoryImpl();
+        Optional<EquipmentEntity> expResult = Optional.empty();
+        Optional<EquipmentEntity> result = instance.findFirstByNameAllIgnoreCase(name);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+//        fail("The test case is a prototype.");
     }
 
     /**
@@ -67,13 +102,14 @@ public class EquipmentRepositoryIT {
     @Test
     public void testFindFirstByNameAllIgnoreCase() {
         System.out.println("findFirstByNameAllIgnoreCase");
-        String name = "";
+        String name = "another name";
         EquipmentRepository instance = new EquipmentRepositoryImpl();
-        Optional<EquipmentEntity> expResult = null;
+        EquipmentEntity insertedEntity = instance.save(new EquipmentEntity(name, 123.456789));
+        Optional<EquipmentEntity> expResult = Optional.of(insertedEntity);
         Optional<EquipmentEntity> result = instance.findFirstByNameAllIgnoreCase(name);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+//        fail("The test case is a prototype.");
     }
 
     /**
@@ -115,15 +151,32 @@ public class EquipmentRepositoryIT {
      * Test of getByPrice method, of class EquipmentRepository.
      */
     @Test
-    public void testGetByPrice() {
+    public void testGetByPriceDefault() {
         System.out.println("getByPrice");
         double price = 0.0;
         EquipmentRepository instance = new EquipmentRepositoryImpl();
-        List<EquipmentEntity> expResult = null;
+        List<EquipmentEntity> expResult = List.of();
         List<EquipmentEntity> result = instance.getByPrice(price);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+//        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getByPrice method, of class EquipmentRepository.
+     */
+    @Test
+    public void testGetByPrice() {
+        System.out.println("getByPrice");
+        double price = 123.4567890;
+        EquipmentRepository instance = new EquipmentRepositoryImpl();
+        EquipmentEntity insertedEntity = instance.save(new EquipmentEntity(
+                "some name", price));
+        List<EquipmentEntity> expResult = List.of(insertedEntity);
+        List<EquipmentEntity> result = instance.getByPrice(price);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+//        fail("The test case is a prototype.");
     }
 
     /**
@@ -134,7 +187,7 @@ public class EquipmentRepositoryIT {
         System.out.println("findByEnabledTrue");
         Pageable pageable = null;
         EquipmentRepository instance = new EquipmentRepositoryImpl();
-        Page<EquipmentEntity> expResult = null;
+        Page<EquipmentEntity> expResult = null; // new PageImpl<>(); // TODO: FIXME: HACK: Cannot infer type arguments for PageImpl<>Java(16778094) // probably unsupported syntax in JDK 17
         Page<EquipmentEntity> result = instance.findByEnabledTrue(pageable);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.

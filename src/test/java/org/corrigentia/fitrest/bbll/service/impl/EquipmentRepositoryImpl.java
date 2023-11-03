@@ -4,12 +4,10 @@
  */
 package org.corrigentia.fitrest.bbll.service.impl;
 
+import org.corrigentia.fitrest.adal.domain.entity.Deletable;
 import org.corrigentia.fitrest.adal.domain.entity.EquipmentEntity;
 import org.corrigentia.fitrest.adal.repo.EquipmentRepository;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.repository.query.FluentQuery;
 
@@ -50,7 +48,7 @@ public class EquipmentRepositoryImpl implements EquipmentRepository {
 
     @Override
     public Optional<EquipmentEntity> findFirstByNameAllIgnoreCase(String name) {
-        return null;
+        return equipments.stream().filter((equipment) -> equipment.getName().equalsIgnoreCase(name)).findFirst();
     }
 
     @Override
@@ -66,7 +64,7 @@ public class EquipmentRepositoryImpl implements EquipmentRepository {
 
     @Override
     public Page<EquipmentEntity> findByEnabledTrue(Pageable pageable) {
-        return null;
+        return new PageImpl<>(equipments.stream().filter(Deletable::isEnabled).toList());
     }
 
     @Override

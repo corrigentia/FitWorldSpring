@@ -85,11 +85,15 @@ public class SecurityConfig {
                             .requestMatchers("api/instructors/new").permitAll()
                             .requestMatchers("api/admins/new").permitAll()
 
-                            .requestMatchers("signIn").permitAll()
-                            .requestMatchers("/api/signIn").permitAll()
+//                            .requestMatchers("signIn").permitAll()
+                            .requestMatchers("signIn").anonymous()
+//                            .requestMatchers("/api/signIn").permitAll()
+                            .requestMatchers("/api/signIn").anonymous()
 
-                            .requestMatchers("register").permitAll()
-                            .requestMatchers("/api/register").permitAll()
+//                            .requestMatchers("register").permitAll()
+                            .requestMatchers("register").anonymous()
+//                            .requestMatchers("/api/register").permitAll()
+                            .requestMatchers("/api/register").anonymous()
 
                             .requestMatchers("swagger-ui/index.html").permitAll().requestMatchers("swagger-ui/**")
                             .permitAll().requestMatchers("v3/api-docs/swagger-config").permitAll()
